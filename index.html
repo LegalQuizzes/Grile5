@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz - Răspunsuri multiple</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    .quiz-box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+    }
+    .btn {
+      background: #28a745;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      margin-top: 20px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .btn:hover {
+      background: #218838;
+    }
+    .reset-btn {
+      background: #007BFF;
+      margin-left: 10px;
+    }
+    .reset-btn:hover {
+      background: #0056b3;
+    }
+    .intrebare {
+      margin-bottom: 20px;
+      padding: 10px;
+      border-left: 5px solid transparent;
+    }
+    .corect {
+      border-left-color: #28a745;
+      background-color: #e7f9ed;
+    }
+    .gresit {
+      border-left-color: #dc3545;
+      background-color: #fde8e9;
+    }
+    .fade {
+      animation: fadein 0.5s ease-in-out;
+    }
+    @keyframes fadein {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .quiz-box {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-box" id="quiz-box"></div>
+
+  <script src="questions.js?v=multi1"></script>
+  <script>
+    function loadQuiz() {
+      const quizBox = document.getElementById("quiz-box");
+      let quizHTML = "<h2>Quiz cu răspunsuri multiple</h2>";
+      questions.forEach((q, idx) => {
+        quizHTML += `<div class="intrebare fade" id="${q.id}-box">`;
+        quizHTML += `<p><strong>${idx + 1}. ${q.text}</strong></p>`;
+        q.answers.forEach((ans, i) => {
+          quizHTML += `<input type="checkbox" name="${q.id}" value="${ans.correct ? 1 : 0}"> ${ans.text}<br>`;
+        });
+        quizHTML += `</div>`;
+      });
+      quizHTML += `
+        <button class="btn" onclick="verifica()">Verifică</button>
+        <button class="btn reset-btn" onclick="reseteaza()">Începe din nou</button>
+        <p id="rezultat"></p>
+      `;
+      quizBox.innerHTML = quizHTML;
+    }
+
+    function verifica() {
+      let scor = 0;
+
+      questions.forEach(q => {
+        let raspunsuri = document.getElementsByName(q.id);
+        let container = document.getElementById(q.id + "-box");
+        container.className = "intrebare fade";
+        let ok = true;
+
+        for (let r of raspunsuri) {
+          let isChecked = r.checked;
+          let isCorrect = r.value === "1";
+          if ((isChecked && !isCorrect) || (!isChecked && isCorrect)) {
+            ok = false;
+          }
+        }
+
+        if (ok) {
+          scor++;
+          container.classList.add("corect");
+        } else {
+          container.classList.add("gresit");
+        }
+      });
+
+      document.getElementById("rezultat").innerText =
+        "Ai obținut " + scor + " puncte din " + questions.length + ".";
+    }
+
+    function reseteaza() {
+      loadQuiz();
+      document.getElementById("rezultat").innerText = "";
+    }
+
+    loadQuiz();
+  </script>
+</body>
+</html>

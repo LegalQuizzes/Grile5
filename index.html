@@ -125,6 +125,20 @@
     }
 
     loadQuiz();
+
+// ... restul codului JS ...
+
+// Blochează copierea
+document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("contextmenu", e => e.preventDefault());
+  document.addEventListener("selectstart", e => e.preventDefault());
+  document.addEventListener("keydown", function(e) {
+    if ((e.ctrlKey && ['c', 'x', 'u', 's'].includes(e.key.toLowerCase())) ||
+        (e.metaKey && ['c', 'x', 'u', 's'].includes(e.key.toLowerCase()))) {
+      e.preventDefault();
+    }
+  });
+});
   </script>
 </body>
 </html>
